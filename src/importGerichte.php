@@ -29,17 +29,15 @@ if(isset($_POST['importSubmit'])){
                 $kommentar = $line[4];
 
                 // Check whether member already exists in the database with the same gericht
-                $prevQuery = "SELECT quelle, dauer, portionen, kommentar FROM gerichte WHERE gericht = '".$line[0]."'";
-                $prevResult = $mysqli->query($prevQuery);
+                $prevResult = mysqli_query($mysqli, "SELECT * FROM gerichte WHERE gericht='$gericht'");
                 $dbstate = mysqli_fetch_array($prevResult);
-                $dbQuelle = $dbstate['quelle'];
-                $dbDauer = $dbstate['dauer'];
-                $dbPortionen= $dbstate['portionen'];
-                $dbKommentar = $dbstate['kommentar'];
 
                 if($prevResult->num_rows > 0){
+                  $dbQuelle = $dbstate['quelle'];
+                  $dbDauer = $dbstate['dauer'];
+                  $dbPortionen= $dbstate['portionen'];
+                  $dbKommentar = $dbstate['kommentar'];
                     // Update member data in the database
-                    //$mysqli->query("UPDATE gerichte SET quelle = '".$quelle."', dauer = ".$dauer.", portionen = ".$portionen.", kommentar = '".$kommentar."' WHERE gericht = '".$gericht."'");
                     if($dbQuelle != $quelle or $dbDauer != $dauer or $dbPortionen != $portionen or $dbKommentar != $kommentar){
                       $stmt = $mysqli->prepare("UPDATE gerichte SET quelle=?, dauer=?, portionen=?, kommentar=? WHERE gericht=?");
                       $stmt->bind_param("siisi", $quelle, $dauer, $portionen, $kommentar, $gericht);
@@ -47,7 +45,7 @@ if(isset($_POST['importSubmit'])){
                     }
                 }else{
                     // Insert member data in the database
-                    $mysqli->query("INSERT INTO gerichte(gericht, quelle, dauer, portionen, kommentar) VALUES ('".$gericht."', '".$quelle."', ".$dauer.", ".$portionen.", '".$kommentar."')");
+                    $mysqli->query("INSERT INTO gerichte(gericht, quelle, dauer, portionen, kommentar) VALUES ('".$gericht."', NULLIF('".$quelle."', ''), NULLIF('".$dauer."', ''), NULLIF('".$portionen."', ''), NULLIF('".$kommentar."', ''))");
                 }
                 unset($gericht);
                 unset($quelle);

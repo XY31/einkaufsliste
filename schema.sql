@@ -5,6 +5,7 @@ CREATE TABLE `essensplan_produktiv`.`gerichte` (
   `gericht` VARCHAR(100) NOT NULL UNIQUE,
   `quelle` VARCHAR(100),
   `dauer` int(3),
+  `portionen` int(3),
   `kommentar` VARCHAR(200),
   PRIMARY KEY  (`id`)
 );
@@ -30,7 +31,6 @@ CREATE TABLE `essensplan_produktiv`.`rezepte` (
   `zutat` VARCHAR(100) NOT NULL,
   `rezeptmenge` int(5),
   `einheit` VARCHAR(20),
-  `portionen` int(3),
   PRIMARY KEY  (`id`)
 );
 
