@@ -59,5 +59,10 @@ $jahr = date("Y");
 		}
 		?>
 	</table>
+	<table style="border: 0px">
+		<tr style="background-color: white; border-bottom: 0px">
+			<td style=" text-align:left; font-size:10; color:black">Version 1.0</td>
+		</tr>
+	</table>
 </body>
 </html>
