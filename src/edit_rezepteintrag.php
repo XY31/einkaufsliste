@@ -9,7 +9,6 @@ if(isset($_POST['update']))
 	$zutat = mysqli_real_escape_string($mysqli, $_POST['zutat']);
 	$rezeptmenge = mysqli_real_escape_string($mysqli, $_POST['rezeptmenge']);
 	$einheit = mysqli_real_escape_string($mysqli, $_POST['einheit']);
-	$portionen = mysqli_real_escape_string($mysqli, $_POST['portionen']);
 
 	$gerichtErr= $zutatErr = "";
 
@@ -23,8 +22,8 @@ if(isset($_POST['update']))
 			}
 	} else {
 		// Execute UPDATE
-		$stmt = $mysqli->prepare("UPDATE rezepte SET gericht=?, zutat=?, rezeptmenge=?, einheit=?, portionen=? WHERE gericht=? AND zutat=?");
-		$stmt->bind_param("ssisiss", $gericht, $zutat, $rezeptmenge, $einheit, $portionen, $gericht, $zutat);
+		$stmt = $mysqli->prepare("UPDATE rezepte SET gericht=?, zutat=?, rezeptmenge=?, einheit=? WHERE gericht=? AND zutat=?");
+		$stmt->bind_param("ssisiss", $gericht, $zutat, $rezeptmenge, $einheit, $gericht, $zutat);
 		$stmt->execute();
 
 		// Redirect to rezept page (rezept.php)
@@ -56,7 +55,6 @@ else {
 		$zutat = $res['zutat'];
 		$rezeptmenge = $res['rezeptmenge'];
 		$einheit = $res['einheit'];
-		$portionen = $res['portionen'];
 	}
 }
 ?>
@@ -90,12 +88,6 @@ else {
 				<td>Einheit</td>
 				<td>
 					<input type="text" name="einheit" value="<?php echo $einheit = isset($einheit) ? $einheit: '';?>">
-				</td>
-			</tr>
-			<tr>
-				<td>Portionen</td>
-				<td>
-					<input type="text" name="portionen" value="<?php echo $portionen = isset($portionen) ? $portionen: '';?>">
 				</td>
 			</tr>
 			<tr>

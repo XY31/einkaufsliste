@@ -51,6 +51,11 @@ else if (isset($_POST['cancel'])) {
 $jahr = $_GET['jahr'];
 $kalenderwoche = $_GET['kalenderwoche'];
 
+function getDauerPortionen($mysqli, $tagesgericht){
+	$gericht = mysqli_query($mysqli, "SELECT dauer, portionen FROM gerichte WHERE gericht='$tagesgericht'");
+	return mysqli_fetch_array($gericht);
+}
+
 // Get Nährwerte by gericht
 $result = mysqli_query($mysqli, "SELECT * FROM wochenplaene WHERE jahr='$jahr' AND kalenderwoche='$kalenderwoche'");
 
@@ -85,8 +90,8 @@ else {
 	<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-		<table>
-			<tr>
+		<table style="width:60%;">
+			<tr style="background-color: lightblue; color: black">
 				<td><input type="submit" id="lastweek" name="update" value="letzte Woche" function="lastweek()">
 					<script>
 					document.getElementById("lastweek").addEventListener("click", myFunction);
@@ -94,7 +99,7 @@ else {
 		        window.location.href="wochenplan.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php $letzteKalenderwoche = $kalenderwoche - 1; echo $letzteKalenderwoche ?>";
 		      }
 					</script></td>
-				<td style="background-color: lightblue; text-align: center; font-size: 22px;">Woche: <?php echo $kalenderwoche ?> Jahr: <?php echo $jahr ?></td>
+				<td style="text-align:center">Woche: <?php echo $kalenderwoche ?> Jahr: <?php echo $jahr ?></td>
 				<td><input type="submit" id="nextweek" name="update" value="nächste Woche" function="nextweek()">
 					<script>
 					document.getElementById("nextweek").addEventListener("click", myFunction);
@@ -106,6 +111,12 @@ else {
 		</table>
 	<form name="form1" method="post" action="wochenplan.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php echo $kalenderwoche ?>">
 		<table>
+			<tr style="background-color: grey; color: #fff; font-weight: bold;">
+				<td>Wochentag</td>
+				<td>Gericht</td>
+				<td>Dauer</td>
+				<td>Portionen</td>
+			</tr>
 			<tr>
 				<td>Montag</td>
 				<td>
@@ -114,7 +125,7 @@ else {
 								while ($res = $db_gericht ->fetch_assoc()) {
 									$tagesgericht = $res['gericht'];
 								};
-						echo "<select name='montag'>";
+						echo "<select id= 'montag' name='montag' onchange='setDauerPortionen()'>";
 
 				    while ($row = $liste->fetch_assoc()) {
 				                  unset($montag);
@@ -127,6 +138,15 @@ else {
 						}
 					echo "</select>";?>
 				</td>
+				<td id="dauerMontag">
+					<script>
+					//document.getElementById("montag").addEventListener("click", setDauer);
+					function setDauer(){
+							document.getElementById("dauerMontag").value = <?php  $gericht = getDauerPortionen($mysqli, $montag);
+									echo $gericht['dauer'];?>;
+						}
+					</script></td>
+				<td id="portionMontag"></td>
 			</tr>
 			<tr>
 				<td>Dienstag</td>
@@ -149,6 +169,8 @@ else {
 						}
 					echo "</select>";?>
 				</td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td>Mittwoch</td>
@@ -171,6 +193,8 @@ else {
 						}
 					echo "</select>";?>
 				</td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td>Donnerstag</td>
@@ -193,6 +217,8 @@ else {
 						}
 					echo "</select>";?>
 				</td>
+				<td></td>
+				<td></td>
 			</tr>
       <tr>
 				<td>Freitag</td>
@@ -215,6 +241,8 @@ else {
 						}
 					echo "</select>";?>
 				</td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td>Samstag</td>
@@ -237,6 +265,8 @@ else {
 						}
 					echo "</select>";?>
 				</td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td>Sonntag</td>
@@ -259,11 +289,15 @@ else {
 						}
 					echo "</select>";?>
 				</td>
+				<td></td>
+				<td></td>
 			</tr>
 			<tr>
 				<td>
 					<input class="cancel" type="submit" name="cancel" value="Cancel">
 				</td>
+				<td></td>
+				<td></td>
 				<td>
 					<input type="submit" name="update" value="Update">
 					<input type="hidden" name="jahr" value=<?php echo $_GET['jahr'];?>>
@@ -272,15 +306,19 @@ else {
 			</tr>
 		</table>
 	</form>
-	<table>
-		<tr>
-			<input type="submit" id="createList" name="einkaufsliste" value="Einkaufsliste erzeugen" function="createList()">
-				<script>
-				document.getElementById("createList").addEventListener("click", myFunction);
-				function myFunction() {
-					window.location.href="einkaufsliste.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php echo $kalenderwoche ?>";
-				}
-				</script>
+	<table style="width:60%">
+		<tr style="background-color: lightblue; color: black; text-align: center">
+			<td></td>
+			<td>
+				<input type="submit" id="createList" name="einkaufsliste" value="Einkaufsliste erzeugen" function="createList()">
+							<script>
+							document.getElementById("createList").addEventListener("click", myFunction);
+							function myFunction() {
+								window.location.href="einkaufsliste.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php echo $kalenderwoche ?>";
+							}
+							</script>
+			</td>
+			<td></td>
 		</tr>
 	</table>
 </body>

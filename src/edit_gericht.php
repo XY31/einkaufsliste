@@ -9,6 +9,7 @@ if(isset($_POST['update']))
 	$gericht = mysqli_real_escape_string($mysqli, $_POST['gericht']);
 	$quelle = mysqli_real_escape_string($mysqli, $_POST['quelle']);
 	$dauer = mysqli_real_escape_string($mysqli, $_POST['dauer']);
+	$portionen = mysqli_real_escape_string($mysqli, $_POST['portionen']);
 	$kommentar = mysqli_real_escape_string($mysqli, $_POST['kommentar']);
 
 	$gerichtErr= $quelleErr = $dauerErr = $kommentarErr = "";
@@ -20,8 +21,8 @@ if(isset($_POST['update']))
 		}
 	} else {
 		// Execute UPDATE
-		$stmt = $mysqli->prepare("UPDATE gerichte SET gericht=?, quelle=?, dauer=?, kommentar=? WHERE id=?");
-		$stmt->bind_param("ssisi", $gericht, $quelle, $dauer, $kommentar, $id);
+		$stmt = $mysqli->prepare("UPDATE gerichte SET gericht=?, quelle=?, dauer=?, portionen=?, kommentar=? WHERE id=?");
+		$stmt->bind_param("ssiisi", $gericht, $quelle, $dauer, $portionen, $kommentar, $id);
 		$stmt->execute();
 
 		// Redirect to home page (index.php)
@@ -50,6 +51,7 @@ else {
 		$gericht = $res['gericht'];
 		$quelle = $res['quelle'];
 		$dauer = $res['dauer'];
+		$portionen = $res['portionen'];
 		$kommentar = $res['kommentar'];
 	}
 }
@@ -79,6 +81,12 @@ else {
 				<td>Dauer</td>
 				<td>
 					<input type="text" name="dauer" value="<?php echo $dauer = isset($dauer) ? $dauer: '';?>">
+				</td>
+			</tr>
+			<tr>
+				<td>Portionen</td>
+				<td>
+					<input type="text" name="portionen" value="<?php echo $portionen = isset($portionen) ? $portionen: '';?>">
 				</td>
 			</tr>
 			<tr>

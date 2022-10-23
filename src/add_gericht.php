@@ -8,6 +8,7 @@ if(isset($_POST['update']))
 	$gericht = mysqli_real_escape_string($mysqli, $_POST['gericht']);
 	$quelle = mysqli_real_escape_string($mysqli, $_POST['quelle']);
 	$dauer = mysqli_real_escape_string($mysqli, $_POST['dauer']);
+	$portionen = mysqli_real_escape_string($mysqli, $_POST['portionen']);
 	$kommentar = mysqli_real_escape_string($mysqli, $_POST['kommentar']);
 
 	$gerichtErr = "";
@@ -19,8 +20,8 @@ if(empty($gericht)) {
 		}
 	} else {
 		// Insert new contact
-		$stmt = $mysqli->prepare("INSERT INTO gerichte(gericht,quelle,dauer,kommentar) VALUES(?, ?, ?, ?)");
-		$stmt->bind_param("ssis", $gericht, $quelle, $dauer, $kommentar);
+		$stmt = $mysqli->prepare("INSERT INTO gerichte(gericht,quelle,dauer,portionen,kommentar) VALUES(?, ?, ?, ?, ?)");
+		$stmt->bind_param("ssiis", $gericht, $quelle, $dauer, $portionen, $kommentar);
 		$stmt->execute();
 
 		// Redirect to home page (index.php)
@@ -57,6 +58,12 @@ else if (isset($_POST['cancel'])) {
 				<td>Dauer</td>
 				<td>
 					<input type="text" name="dauer" value="<?php echo $dauer = isset($dauer) ? $dauer: '';?>">
+				</td>
+			</tr>
+			<tr>
+				<td>Portionen</td>
+				<td>
+					<input type="text" name="portionen" value="<?php echo $portionen = isset($portionen) ? $portionen: '';?>">
 				</td>
 			</tr>
 			<tr>

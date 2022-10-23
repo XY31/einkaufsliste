@@ -10,7 +10,6 @@ if(isset($_POST['update']))
 	$zutat = mysqli_real_escape_string($mysqli, $_POST['zutat']);
 	$rezeptmenge = mysqli_real_escape_string($mysqli, $_POST['rezeptmenge']);
 	$einheit = mysqli_real_escape_string($mysqli, $_POST['einheit']);
-	$portionen = mysqli_real_escape_string($mysqli, $_POST['portionen']);
 
 	$gerichtErr = $zutatErr = "";
 
@@ -24,8 +23,8 @@ if(empty($gericht) && empty($zutat)) {
 		}
 	} else {
 		// Insert new Zutat
-		$stmt = $mysqli->prepare("INSERT INTO rezepte(gericht,zutat,rezeptmenge,einheit,portionen) VALUES(?, ?, ?, ?, ?)");
-		$stmt->bind_param("ssisi", $gericht, $zutat, $rezeptmenge, $einheit, $portionen);
+		$stmt = $mysqli->prepare("INSERT INTO rezepte(gericht,zutat,rezeptmenge,einheit) VALUES(?, ?, ?, ?)");
+		$stmt->bind_param("ssis", $gericht, $zutat, $rezeptmenge, $einheit);
 		$stmt->execute();
 
 		// Redirect to rezept page (rezept.php)
@@ -71,12 +70,6 @@ $gericht = $_GET['gericht'];
 				<td>Einheit</td>
 				<td>
 					<input type="text" name="einheit" value="<?php echo $einheit = isset($einheit) ? $einheit: '';?>">
-				</td>
-			</tr>
-			<tr>
-				<td>Portionen</td>
-				<td>
-					<input type="text" name="portionen" value="<?php echo $portionen = isset($portionen) ? $portionen: '';?>">
 				</td>
 			</tr>
 			<tr>

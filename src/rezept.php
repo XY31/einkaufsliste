@@ -52,7 +52,17 @@ $result = mysqli_query($mysqli, "SELECT * FROM rezepte WHERE gericht='$gericht'"
 <body>
 		<table>
 			<tr>
-				<td style="background-color: lightblue; text-align: center; font-size: 22px;">Gericht: <?php echo $gericht ?></td>
+				<td style="background-color: lightblue; color: black; text-align: center; font-size: 22px;">Gericht: <?php echo $gericht ?>
+					<div class="col-md-12 head">
+							<div class="float-left">
+									<a href="exportRezepte.php" class="btn btn-success" style="color:red"><i class="dwn"></i> Export Daten</a>
+							</div>
+					</div>
+					<div class="col-md-12 head">
+							<div class="float-left">
+									<a href="importRezepteForm.php" class="btn btn-success" style="color:green"><i class="dwn"></i> Import Daten</a>
+							</div>
+					</div></td>
 			</tr>
 		</table>
 		<table>
@@ -60,7 +70,6 @@ $result = mysqli_query($mysqli, "SELECT * FROM rezepte WHERE gericht='$gericht'"
 				<td>Zutat</td>
 				<td>Menge</td>
 				<td>Einheit</td>
-				<td>Portionen</td>
 				<td><a class="button" href="add_rezepteintrag.php?gericht=<?php echo $gericht ?>">Neue Zutat</a>
 						<a class="button" href="index.php">Zurück</a>
 				</td>
@@ -72,9 +81,8 @@ $result = mysqli_query($mysqli, "SELECT * FROM rezepte WHERE gericht='$gericht'"
 					echo "<td>".$res['zutat']."</td>";
 					echo "<td>".$res['rezeptmenge']."</td>";
 					echo "<td>".$res['einheit']."</td>";
-					echo "<td>".$res['portionen']."</td>";
 					echo "<td><a href=\"edit_rezepteintrag.php?gericht=$res[gericht]&zutat=$res[zutat]\">Edit</a> |
-										<a href=\"delete_rezepteintrag.php?gericht=$res[gericht]&zutat=$res[zutat]\" onClick=\"return confirm('Soll die Zutat wirklich gelöscht werden?')\">Delete</a></td>";
+										<a href=\"delete_rezepteintrag.php?id=$res[id]&gericht=$res[gericht]\" onClick=\"return confirm('Soll die Zutat wirklich gelöscht werden?')\">Delete</a></td>";
 				}
 				?>
 		</table>
