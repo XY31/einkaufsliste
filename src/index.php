@@ -1,22 +1,23 @@
-<?php
-// Include the database connection file
-include_once("config.php");
-
-// Fetch contacts (in descending order)
-$result = mysqli_query($mysqli, "SELECT * FROM gerichte ORDER BY id DESC");
-
-// Get current week NumberFormatter
-$ddate = date("Y-m-d");
-$date = new DateTime($ddate);
-$kalenderwoche = $date->format("W");
-$jahr = date("Y");
-?>
-<html>
+<!DOCTYPE html>
 <head>
 	<title>MariaDB Essensplan</title>
 	<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+	<?php
+	header('Content-type: text/html; charset=utf-8');
+	// Include the database connection file
+	include_once("config.php");
+
+	// Fetch contacts (in descending order)
+	$result = mysqli_query($mysqli, "SELECT * FROM gerichte ORDER BY id DESC");
+
+	// Get current week NumberFormatter
+	$ddate = date("Y-m-d");
+	$date = new DateTime($ddate);
+	$kalenderwoche = $date->format("W");
+	$jahr = date("Y");
+	?>
 	<table>
 		<tr>
 			<td style="background-color: lightblue; color: black; text-align: center; font-size: 22px;">Gerichte

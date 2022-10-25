@@ -1,68 +1,35 @@
-<?php
-// Include database connection file
-include_once("config.php");
-
-if(isset($_POST['update']))
-{
-	// Retrieve record values
-	$id = mysqli_real_escape_string($mysqli, $_POST['id']);
-	$gericht = mysqli_real_escape_string($mysqli, $_POST['gericht']);
-	$quelle = mysqli_real_escape_string($mysqli, $_POST['quelle']);
-	$dauer = mysqli_real_escape_string($mysqli, $_POST['dauer']);
-	$portionen = mysqli_real_escape_string($mysqli, $_POST['portionen']);
-	$kommentar = mysqli_real_escape_string($mysqli, $_POST['kommentar']);
-
-	$gerichtErr= $quelleErr = $dauerErr = $kommentarErr = "";
-
-	// Check for empty fields
-	if(empty($gericht)) {
-		if(empty($gericht)) {
-			$gerichtErr = "* required";
-		}
-	} else {
-		// Execute UPDATE
-		$stmt = $mysqli->prepare("UPDATE gerichte SET gericht=?, quelle=?, dauer=?, portionen=?, kommentar=? WHERE id=?");
-		$stmt->bind_param("ssiisi", $gericht, $quelle, $dauer, $portionen, $kommentar, $id);
-		$stmt->execute();
-
-		// Redirect to home page (index.php)
-		header("Location: index.php");
-	}
-}
-else if (isset($_POST['cancel'])) {
-	// Redirect to home page (index.php)
-	header("Location: index.php");
-}
-?>
-<?php
-// Retrieve id value from querystring parameter
-$id = $_GET['id'];
-
-// Get contact by id
-$result = mysqli_query($mysqli, "SELECT * FROM gerichte WHERE id=$id");
-
-if (!$result) {
-    printf("Error: %s\n", mysqli_error($mysqli));
-    exit();
-}
-else {
-	while($res = mysqli_fetch_array($result))
-	{
-		$gericht = $res['gericht'];
-		$quelle = $res['quelle'];
-		$dauer = $res['dauer'];
-		$portionen = $res['portionen'];
-		$kommentar = $res['kommentar'];
-	}
-}
-?>
-<html>
+<!DOCTYPE html>
 <head>
 	<title>Gericht bearbeiten</title>
 	<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-	<form name="form1" method="post" action="edit_gericht.php?id=<?php echo $gericht ?>">
+	<?php
+	// Include database connection file
+	include_once("config.php");
+
+	// Retrieve id value from querystring parameter
+	$id = $_GET['id'];
+
+	// Get contact by id
+	$result = mysqli_query($mysqli, "SELECT * FROM gerichte WHERE id=$id");
+
+	if (!$result) {
+	    printf("Error: %s\n", mysqli_error($mysqli));
+	    exit();
+	}
+	else {
+		while($res = mysqli_fetch_array($result))
+		{
+			$gericht = $res['gericht'];
+			$quelle = $res['quelle'];
+			$dauer = $res['dauer'];
+			$portionen = $res['portionen'];
+			$kommentar = $res['kommentar'];
+		}
+	}
+	?>
+	<form name="form1" method="post" action="edit_gericht.php?id=<?php echo $id ?>">
 		<table>
 			<tr>
 				<td>Gericht</td>
@@ -108,3 +75,36 @@ else {
 	</form>
 </body>
 </html>
+<?php
+if(isset($_POST['update']))
+{
+	// Retrieve record values
+	$id = mysqli_real_escape_string($mysqli, $_POST['id']);
+	$gericht = mysqli_real_escape_string($mysqli, $_POST['gericht']);
+	$quelle = mysqli_real_escape_string($mysqli, $_POST['quelle']);
+	$dauer = mysqli_real_escape_string($mysqli, $_POST['dauer']);
+	$portionen = mysqli_real_escape_string($mysqli, $_POST['portionen']);
+	$kommentar = mysqli_real_escape_string($mysqli, $_POST['kommentar']);
+
+	$gerichtErr= $quelleErr = $dauerErr = $kommentarErr = "";
+
+	// Check for empty fields
+	if(empty($gericht)) {
+		if(empty($gericht)) {
+			$gerichtErr = "* required";
+		}
+	} else {
+		// Execute UPDATE
+		$stmt = $mysqli->prepare("UPDATE gerichte SET gericht=?, quelle=?, dauer=?, portionen=?, kommentar=? WHERE id=?");
+		$stmt->bind_param("ssiisi", $gericht, $quelle, $dauer, $portionen, $kommentar, $id);
+		$stmt->execute();
+
+		// Redirect to home page (index.php)
+		header("Location: index.php");
+	}
+}
+else if (isset($_POST['cancel'])) {
+	// Redirect to home page (index.php)
+	header("Location: index.php");
+}
+?>

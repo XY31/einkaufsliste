@@ -1,23 +1,29 @@
+<!DOCTYPE html>
+<head>
+	<title>Nährwerte bearbeiten</title>
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
 <?php
-// Include database connection file
-include_once("config.php");
-
-function createUpdateDay($mysqli, $jahr, $kalenderwoche, $wochentag, $gericht){
-	$result = mysqli_query($mysqli, "SELECT * FROM wochenplaene WHERE jahr='$jahr' AND kalenderwoche='$kalenderwoche' AND wochentag ='$wochentag'");
-	if( $result->num_rows == 0) {
-			$stmt = $mysqli->prepare("INSERT INTO wochenplaene(jahr,kalenderwoche,wochentag,gericht) VALUES(?, ?, ?, ?)");
-			$stmt->bind_param("iiss",  $jahr, $kalenderwoche, $wochentag, $gericht);
-			$stmt->execute();
-		} else {
-			// Execute UPDATE
-			$stmt = $mysqli->prepare("UPDATE wochenplaene SET gericht=? WHERE jahr=? AND kalenderwoche=? AND wochentag=?");
-			$stmt->bind_param("siis", $gericht, $jahr, $kalenderwoche, $wochentag);
-			$stmt->execute();
-		}
-}
-
+	// Include database connection file
+	include_once("config.php");
 if(isset($_POST['update']))
 {
+
+	function createUpdateDay($mysqli, $jahr, $kalenderwoche, $wochentag, $gericht){
+		$result = mysqli_query($mysqli, "SELECT * FROM wochenplaene WHERE jahr='$jahr' AND kalenderwoche='$kalenderwoche' AND wochentag ='$wochentag'");
+		if( $result->num_rows == 0) {
+				$stmt = $mysqli->prepare("INSERT INTO wochenplaene(jahr,kalenderwoche,wochentag,gericht) VALUES(?, ?, ?, ?)");
+				$stmt->bind_param("iiss",  $jahr, $kalenderwoche, $wochentag, $gericht);
+				$stmt->execute();
+			} else {
+				// Execute UPDATE
+				$stmt = $mysqli->prepare("UPDATE wochenplaene SET gericht=? WHERE jahr=? AND kalenderwoche=? AND wochentag=?");
+				$stmt->bind_param("siis", $gericht, $jahr, $kalenderwoche, $wochentag);
+				$stmt->execute();
+			}
+	}
+
 	// Retrieve record values
 	$jahr = mysqli_real_escape_string($mysqli, $_POST['jahr']);
 	$kalenderwoche = mysqli_real_escape_string($mysqli, $_POST['kalenderwoche']);
@@ -47,49 +53,44 @@ else if (isset($_POST['cancel'])) {
 	header("Location: index.php");
 }
 ?>
-<?php
-$jahr = $_GET['jahr'];
-$kalenderwoche = $_GET['kalenderwoche'];
+	<?php
 
-function getDauerPortionen($mysqli, $tagesgericht){
-	$gericht = mysqli_query($mysqli, "SELECT dauer, portionen FROM gerichte WHERE gericht='$tagesgericht'");
-	return mysqli_fetch_array($gericht);
-}
+	$jahr = $_GET['jahr'];
+	$kalenderwoche = $_GET['kalenderwoche'];
 
-// Get Nährwerte by gericht
-$result = mysqli_query($mysqli, "SELECT * FROM wochenplaene WHERE jahr='$jahr' AND kalenderwoche='$kalenderwoche'");
-
-if (!$result) {
-    printf("Error: %s\n", mysqli_error($mysqli));
-    exit();
-}
-else {
-	while($res = mysqli_fetch_array($result))
-	{
-		if ($res['wochentag'] == 'Montag') {
-			$montag = $res['gericht'];
-		} elseif ($res['wochentag'] == 'Dienstag') {
-			$dienstag = $res['gericht'];
-		} elseif ($res['wochentag'] == 'Mittwoch') {
-			$mittwoch = $res['gericht'];
-		} elseif ($res['wochentag'] == 'Donnerstag') {
-			$donnerstag = $res['gericht'];
-		} elseif ($res['wochentag'] == 'Freitag') {
-			$freitag = $res['gericht'];
-		} elseif ($res['wochentag'] == 'Samstag') {
-			$samstag = $res['gericht'];
-		} elseif ($res['wochentag'] == 'Sonntag') {
-			$sonntag = $res['gericht'];
-		};
+	function getDauerPortionen($mysqli, $tagesgericht){
+		$gericht = mysqli_query($mysqli, "SELECT dauer, portionen FROM gerichte WHERE gericht='$tagesgericht'");
+		return mysqli_fetch_array($gericht);
 	}
-}
-?>
-<html>
-<head>
-	<title>Nährwerte bearbeiten</title>
-	<link rel="stylesheet" href="styles.css" />
-</head>
-<body>
+
+	// Get Nährwerte by gericht
+	$result = mysqli_query($mysqli, "SELECT * FROM wochenplaene WHERE jahr='$jahr' AND kalenderwoche='$kalenderwoche'");
+
+	if (!$result) {
+	    printf("Error: %s\n", mysqli_error($mysqli));
+	    exit();
+	}
+	else {
+		while($res = mysqli_fetch_array($result))
+		{
+			if ($res['wochentag'] == 'Montag') {
+				$montag = $res['gericht'];
+			} elseif ($res['wochentag'] == 'Dienstag') {
+				$dienstag = $res['gericht'];
+			} elseif ($res['wochentag'] == 'Mittwoch') {
+				$mittwoch = $res['gericht'];
+			} elseif ($res['wochentag'] == 'Donnerstag') {
+				$donnerstag = $res['gericht'];
+			} elseif ($res['wochentag'] == 'Freitag') {
+				$freitag = $res['gericht'];
+			} elseif ($res['wochentag'] == 'Samstag') {
+				$samstag = $res['gericht'];
+			} elseif ($res['wochentag'] == 'Sonntag') {
+				$sonntag = $res['gericht'];
+			};
+		}
+	}
+	?>
 		<table style="width:60%;">
 			<tr style="background-color: lightblue; color: black">
 				<td><input type="submit" id="lastweek" name="update" value="letzte Woche" function="lastweek()">

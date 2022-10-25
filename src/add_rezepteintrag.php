@@ -1,51 +1,12 @@
-<?php
-// Include database connection file
-include_once("config.php");
-
-if(isset($_POST['update']))
-{
-	// Retrieve record values
-	//$gericht = $_GET['gericht'];
-	$gericht = mysqli_real_escape_string($mysqli, $_POST['gericht']);
-	$zutat = mysqli_real_escape_string($mysqli, $_POST['zutat']);
-	$rezeptmenge = mysqli_real_escape_string($mysqli, $_POST['rezeptmenge']);
-	$einheit = mysqli_real_escape_string($mysqli, $_POST['einheit']);
-
-	$gerichtErr = $zutatErr = "";
-
-	// Check for empty fields
-if(empty($gericht) && empty($zutat)) {
-		if(empty($gericht)) {
-			$gerichtErr = "* required";
-		}
-		if(empty($zutat)) {
-			$zutatErr = "* required";
-		}
-	} else {
-		// Insert new Zutat
-		$stmt = $mysqli->prepare("INSERT INTO rezepte(gericht,zutat,rezeptmenge,einheit) VALUES(?, ?, ?, ?)");
-		$stmt->bind_param("ssis", $gericht, $zutat, $rezeptmenge, $einheit);
-		$stmt->execute();
-
-		// Redirect to rezept page (rezept.php)
-		header("Location:rezept.php?gericht=$gericht");
-	}
-}
-else if (isset($_POST['cancel'])) {
-	// Redirect to rezept page (rezept.php)
-	$gericht = mysqli_real_escape_string($mysqli, $_POST['gericht']);
-	header("Location:rezept.php?gericht=$gericht");
-}
-?>
-<?php
-$gericht = $_GET['gericht'];
-?>
-<html>
+<!DOCTYPE html>
 <head>
 	<title>Neue Zutat</title>
 	<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+	<?php
+	$gericht = $_GET['gericht'];
+	?>
 	<form name="form1" method="post" action="add_rezepteintrag.php?gericht=$gericht">
 		<table>
 			<tr>
@@ -86,3 +47,42 @@ $gericht = $_GET['gericht'];
 	</form>
 </body>
 </html>
+<?php
+// Include database connection file
+include_once("config.php");
+
+if(isset($_POST['update']))
+{
+	// Retrieve record values
+	//$gericht = $_GET['gericht'];
+	$gericht = mysqli_real_escape_string($mysqli, $_POST['gericht']);
+	$zutat = mysqli_real_escape_string($mysqli, $_POST['zutat']);
+	$rezeptmenge = mysqli_real_escape_string($mysqli, $_POST['rezeptmenge']);
+	$einheit = mysqli_real_escape_string($mysqli, $_POST['einheit']);
+
+	$gerichtErr = $zutatErr = "";
+
+	// Check for empty fields
+if(empty($gericht) && empty($zutat)) {
+		if(empty($gericht)) {
+			$gerichtErr = "* required";
+		}
+		if(empty($zutat)) {
+			$zutatErr = "* required";
+		}
+	} else {
+		// Insert new Zutat
+		$stmt = $mysqli->prepare("INSERT INTO rezepte(gericht,zutat,rezeptmenge,einheit) VALUES(?, ?, ?, ?)");
+		$stmt->bind_param("ssis", $gericht, $zutat, $rezeptmenge, $einheit);
+		$stmt->execute();
+
+		// Redirect to rezept page (rezept.php)
+		header("Location:rezept.php?gericht=$gericht");
+	}
+}
+else if (isset($_POST['cancel'])) {
+	// Redirect to rezept page (rezept.php)
+	$gericht = mysqli_real_escape_string($mysqli, $_POST['gericht']);
+	header("Location:rezept.php?gericht=$gericht");
+}
+?>
