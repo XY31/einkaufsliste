@@ -4,21 +4,11 @@
 	<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-	<?php
-	// Include database connection file
+	<table>
+<?php
+// Include database connection file
 	include_once("config.php");
-
-	if(isset($_POST['update']))
-	{
-			// Redirect to home page (index.php)
-			header("Location: index.php");
-	}
-	else if (isset($_POST['cancel'])) {
-		// Redirect to home page (index.php)
-		header("Location: index.php");
-	}
-	?>
-	<?php
+	
 	function consolidateList(array $einkaufsliste){
 
 		for ($i=0; $i < count($einkaufsliste); $i++) {
@@ -73,7 +63,6 @@
 		header("Location: wochenplan.php?jahr=$jahr&kalenderwoche=$kalenderwoche");
 	};
 	?>
-		<table>
 			<tr>
 				<td>Zutat</td>
 				<td>Menge</td>
@@ -96,3 +85,15 @@
 		</table>
 </body>
 </html>
+<?php
+
+	if(isset($_POST['update']))
+	{
+			// Redirect to home page (index.php)
+			header("Location: index.php");
+	}
+	else if (isset($_POST['cancel'])) {
+		// Redirect to home page (index.php)
+		header("Location: index.php");
+	}
+	?>

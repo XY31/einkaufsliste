@@ -4,73 +4,43 @@
 	<link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<?php
-	// Include database connection file
-	include_once("config.php");
-if(isset($_POST['update']))
-{
-
-	function createUpdateDay($mysqli, $jahr, $kalenderwoche, $wochentag, $gericht){
-		$result = mysqli_query($mysqli, "SELECT * FROM wochenplaene WHERE jahr='$jahr' AND kalenderwoche='$kalenderwoche' AND wochentag ='$wochentag'");
-		if( $result->num_rows == 0) {
-				$stmt = $mysqli->prepare("INSERT INTO wochenplaene(jahr,kalenderwoche,wochentag,gericht) VALUES(?, ?, ?, ?)");
-				$stmt->bind_param("iiss",  $jahr, $kalenderwoche, $wochentag, $gericht);
-				$stmt->execute();
-			} else {
-				// Execute UPDATE
-				$stmt = $mysqli->prepare("UPDATE wochenplaene SET gericht=? WHERE jahr=? AND kalenderwoche=? AND wochentag=?");
-				$stmt->bind_param("siis", $gericht, $jahr, $kalenderwoche, $wochentag);
-				$stmt->execute();
-			}
-	}
-
-	// Retrieve record values
-	$jahr = mysqli_real_escape_string($mysqli, $_POST['jahr']);
-	$kalenderwoche = mysqli_real_escape_string($mysqli, $_POST['kalenderwoche']);
-	$montag = mysqli_real_escape_string($mysqli, $_POST['montag']);
-	$dienstag = mysqli_real_escape_string($mysqli, $_POST['dienstag']);
-	$mittwoch = mysqli_real_escape_string($mysqli, $_POST['mittwoch']);
-	$donnerstag= mysqli_real_escape_string($mysqli, $_POST['donnerstag']);
-	$freitag = mysqli_real_escape_string($mysqli, $_POST['freitag']);
-	$samstag = mysqli_real_escape_string($mysqli, $_POST['samstag']);
-	$sonntag = mysqli_real_escape_string($mysqli, $_POST['sonntag']);
-
-	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Montag', $montag);
-	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Dienstag', $dienstag);
-	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Mittwoch', $mittwoch);
-	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Donnerstag', $donnerstag);
-	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Freitag', $freitag);
-	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Samstag', $samstag);
-	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Sonntag', $sonntag);
-
-		// Redirect to home page (index.php)
-		$jahr = mysqli_real_escape_string($mysqli, $_POST['jahr']);
-		$kalenderwoche = mysqli_real_escape_string($mysqli, $_POST['kalenderwoche']);
-		header("Location:wochenplan.php?jahr=$jahr&kalenderwoche=$kalenderwoche");
-	}
-else if (isset($_POST['cancel'])) {
-	// Redirect to home page (index.php)
-	header("Location: index.php");
-}
-?>
-	<?php
+		<table style="width:60%;">
+			<?php
 
 	$jahr = $_GET['jahr'];
 	$kalenderwoche = $_GET['kalenderwoche'];
-
-	function getDauerPortionen($mysqli, $tagesgericht){
-		$gericht = mysqli_query($mysqli, "SELECT dauer, portionen FROM gerichte WHERE gericht='$tagesgericht'");
-		return mysqli_fetch_array($gericht);
-	}
-
-	// Get Nährwerte by gericht
+	?>
+			<tr style="background-color: lightblue; color: black">
+				<td><input type="submit" id="lastweek" name="update" value="letzte Woche" function="lastweek()">
+					<script>
+					document.getElementById("lastweek").addEventListener("click", myFunction);
+		      function myFunction() {
+		        window.location.href="wochenplan.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php $letzteKalenderwoche = $kalenderwoche - 1; echo $letzteKalenderwoche ?>";
+		      }
+					</script></td>
+				<td style="text-align:center">Woche: <?php echo $kalenderwoche ?> Jahr: <?php echo $jahr ?></td>
+				<td><input type="submit" id="nextweek" name="update" value="nächste Woche" function="nextweek()">
+					<script>
+					document.getElementById("nextweek").addEventListener("click", myFunction);
+					function myFunction() {
+						window.location.href="wochenplan.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php $naechsteKalenderwoche = $kalenderwoche + 1; echo $naechsteKalenderwoche ?>";
+					}
+					</script></td>
+			</tr>
+		</table>
+	<form name="form1" method="post" action="wochenplan.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php echo $kalenderwoche ?>">
+		<?php
+// Include database connection file
+	include_once("config.php");
+	
+	// Get Gericht by Wochentag
 	$result = mysqli_query($mysqli, "SELECT * FROM wochenplaene WHERE jahr='$jahr' AND kalenderwoche='$kalenderwoche'");
 
 	if (!$result) {
 	    printf("Error: %s\n", mysqli_error($mysqli));
 	    exit();
 	}
-	else {
+	else { 
 		while($res = mysqli_fetch_array($result))
 		{
 			if ($res['wochentag'] == 'Montag') {
@@ -91,26 +61,6 @@ else if (isset($_POST['cancel'])) {
 		}
 	}
 	?>
-		<table style="width:60%;">
-			<tr style="background-color: lightblue; color: black">
-				<td><input type="submit" id="lastweek" name="update" value="letzte Woche" function="lastweek()">
-					<script>
-					document.getElementById("lastweek").addEventListener("click", myFunction);
-		      function myFunction() {
-		        window.location.href="wochenplan.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php $letzteKalenderwoche = $kalenderwoche - 1; echo $letzteKalenderwoche ?>";
-		      }
-					</script></td>
-				<td style="text-align:center">Woche: <?php echo $kalenderwoche ?> Jahr: <?php echo $jahr ?></td>
-				<td><input type="submit" id="nextweek" name="update" value="nächste Woche" function="nextweek()">
-					<script>
-					document.getElementById("nextweek").addEventListener("click", myFunction);
-					function myFunction() {
-						window.location.href="wochenplan.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php $naechsteKalenderwoche = $kalenderwoche + 1; echo $naechsteKalenderwoche ?>";
-					}
-					</script></td>
-			</tr>
-		</table>
-	<form name="form1" method="post" action="wochenplan.php?jahr=<?php echo $jahr ?>&kalenderwoche=<?php echo $kalenderwoche ?>">
 		<table>
 			<tr style="background-color: grey; color: #fff; font-weight: bold;">
 				<td>Wochentag</td>
@@ -139,14 +89,7 @@ else if (isset($_POST['cancel'])) {
 						}
 					echo "</select>";?>
 				</td>
-				<td id="dauerMontag">
-					<script>
-					//document.getElementById("montag").addEventListener("click", setDauer);
-					function setDauer(){
-							document.getElementById("dauerMontag").value = <?php  $gericht = getDauerPortionen($mysqli, $montag);
-									echo $gericht['dauer'];?>;
-						}
-					</script></td>
+				<td id="dauerMontag"></td>
 				<td id="portionMontag"></td>
 			</tr>
 			<tr>
@@ -321,6 +264,55 @@ else if (isset($_POST['cancel'])) {
 			</td>
 			<td></td>
 		</tr>
+<?php
+	// Include database connection file
+	include_once("config.php");
+if(isset($_POST['update']))
+{
+
+	function createUpdateDay($mysqli, $jahr, $kalenderwoche, $wochentag, $gericht){
+		$result = mysqli_query($mysqli, "SELECT * FROM wochenplaene WHERE jahr='$jahr' AND kalenderwoche='$kalenderwoche' AND wochentag ='$wochentag'");
+		if( $result->num_rows == 0) {
+				$stmt = $mysqli->prepare("INSERT INTO wochenplaene(jahr,kalenderwoche,wochentag,gericht) VALUES(?, ?, ?, ?)");
+				$stmt->bind_param("iiss",  $jahr, $kalenderwoche, $wochentag, $gericht);
+				$stmt->execute();
+			} else {
+				// Execute UPDATE
+				$stmt = $mysqli->prepare("UPDATE wochenplaene SET gericht=? WHERE jahr=? AND kalenderwoche=? AND wochentag=?");
+				$stmt->bind_param("siis", $gericht, $jahr, $kalenderwoche, $wochentag);
+				$stmt->execute();
+			}
+	}
+
+	// Retrieve record values
+	$jahr = mysqli_real_escape_string($mysqli, $_POST['jahr']);
+	$kalenderwoche = mysqli_real_escape_string($mysqli, $_POST['kalenderwoche']);
+	$montag = mysqli_real_escape_string($mysqli, $_POST['montag']);
+	$dienstag = mysqli_real_escape_string($mysqli, $_POST['dienstag']);
+	$mittwoch = mysqli_real_escape_string($mysqli, $_POST['mittwoch']);
+	$donnerstag= mysqli_real_escape_string($mysqli, $_POST['donnerstag']);
+	$freitag = mysqli_real_escape_string($mysqli, $_POST['freitag']);
+	$samstag = mysqli_real_escape_string($mysqli, $_POST['samstag']);
+	$sonntag = mysqli_real_escape_string($mysqli, $_POST['sonntag']);
+
+	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Montag', $montag);
+	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Dienstag', $dienstag);
+	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Mittwoch', $mittwoch);
+	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Donnerstag', $donnerstag);
+	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Freitag', $freitag);
+	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Samstag', $samstag);
+	createUpdateDay($mysqli, $jahr, $kalenderwoche, 'Sonntag', $sonntag);
+
+		// Redirect to home page (index.php)
+		$jahr = mysqli_real_escape_string($mysqli, $_POST['jahr']);
+		$kalenderwoche = mysqli_real_escape_string($mysqli, $_POST['kalenderwoche']);
+		header("Location:wochenplan.php?jahr=$jahr&kalenderwoche=$kalenderwoche");
+	}
+else if (isset($_POST['cancel'])) {
+	// Redirect to home page (index.php)
+	header("Location: index.php");
+}
+?>
 	</table>
 </body>
 </html>
