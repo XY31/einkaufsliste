@@ -36,11 +36,11 @@
 			<tr>
 				<td>
 					<input class="cancel" type="submit" name="cancel" value="Cancel">
-					<input type="hidden" name="gericht" value=<?php echo $_GET['gericht'];?>>
+					<input type="hidden" name="gericht" value="<?php echo $_GET['gericht'];?>">
 				</td>
 				<td>
 					<input type="submit" name="update" value="Update">
-					<input type="hidden" name="gericht" value=<?php echo $_GET['gericht'];?>>
+					<input type="hidden" name="gericht" value="<?php echo $_GET['gericht'];?>">
 				</td>
 			</tr>
 		</table>

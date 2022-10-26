@@ -7,7 +7,7 @@
 	<?php
 	// Include database connection file
 	include_once("config.php");
-	
+
 	// Retrieve gericht value from querystring parameter
 	$gericht = $_GET['gericht'];
 
@@ -67,7 +67,7 @@
 				</td>
 				<td>
 					<input type="submit" name="update" value="Update">
-					<input type="hidden" name="gericht" value=<?php echo $_GET['gericht'];?>>
+					<input type="hidden" name="gericht" value="<?php echo $_GET['gericht'];?>">
 				</td>
 			</tr>
 		</table>
